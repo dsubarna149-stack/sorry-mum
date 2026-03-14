@@ -30,7 +30,7 @@
         /* মোবাইলের জন্য রেস্পন্সিভ মেইন টাইটেল */
         h1 {
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            font-size: clamp(2.5rem, 8vw, 4.5rem); /* স্ক্রিন অনুযায়ী সাইজ বদলাবে */
+            font-size: clamp(2.5rem, 8vw, 4.5rem); 
             color: #ffffff;
             text-shadow: 3px 3px 10px rgba(255, 50, 50, 0.6);
             z-index: 20;
@@ -45,7 +45,7 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* প্রফেশনাল Serif ফন্ট (মোবাইলের জন্য অ্যাডজাস্ট করা) */
+        /* প্রফেশনাল Serif ফন্ট */
         .love-text {
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.2rem, 5vw, 2.2rem);
@@ -86,32 +86,31 @@
             z-index: 10;
         }
 
-        /* নতুন: পেজের নিচে গোলাপের সারি */
-        .roses-row {
+        /* নতুন: পেজের নিচে একদম মাঝখানে সিঙ্গল গোলাপ */
+        .single-rose-container {
             position: absolute;
-            bottom: -15px; /* একটু নিচে নামানো যাতে ডাঁটি না দেখা যায় */
+            bottom: -20px; /* ডাঁটির কাটা অংশ লুকানোর জন্য একটু নিচে */
             left: 0;
-            width: 100vw;
+            right: 0;
             display: flex;
-            justify-content: space-evenly; /* সমান দূরত্বে থাকবে */
-            align-items: flex-end;
+            justify-content: center;
             z-index: 25;
             pointer-events: none;
         }
 
-        /* গোলাপগুলো বাতাসে দুলবে */
-        .bottom-rose {
-            width: clamp(50px, 15vw, 100px); /* মোবাইলে ছোট, পিসিতে বড় দেখাবে */
+        /* গোলাপটি বাতাসে দুলবে */
+        .single-rose {
+            width: clamp(150px, 45vw, 280px); /* মোবাইলে বড়, পিসিতে আরও বড় দেখাবে */
             height: auto;
-            filter: drop-shadow(0px 8px 10px rgba(0,0,0,0.3));
+            filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.4));
             transform-origin: bottom center; /* একদম নিচ থেকে দুলবে */
-            animation: windSway 3s ease-in-out infinite alternate;
+            animation: windSway 3.5s ease-in-out infinite alternate;
         }
 
         /* বাতাসে দোলার অ্যানিমেশন */
         @keyframes windSway {
-            0% { transform: rotate(-10deg); }
-            100% { transform: rotate(10deg); }
+            0% { transform: rotate(-8deg); }
+            100% { transform: rotate(8deg); }
         }
 
         /* গোলাপের ভেতর থেকে "sorry" ওঠার স্টাইল */
@@ -122,15 +121,15 @@
             font-weight: bold;
             text-shadow: 2px 2px 6px rgba(255, 50, 50, 0.7); 
             pointer-events: none;
-            z-index: 24; /* গোলাপের পেছনে */
-            animation: floatUpSorry 4s ease-out forwards;
+            z-index: 24; /* গোলাপের পেছনে থাকবে (z-index 24) */
+            animation: floatSmoothComment 4s ease-out forwards;
         }
 
-        @keyframes floatUpSorry {
-            0% { opacity: 0; transform: translateY(0) scale(0.5); }
-            15% { opacity: 1; transform: translateY(-40px) scale(1.1); }
+        @keyframes floatSmoothComment {
+            0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+            15% { opacity: 1; transform: translate(var(--x-dir), -30px) scale(1.1); }
             80% { opacity: 0.8; }
-            100% { opacity: 0; transform: translateY(-250px) scale(0.8); }
+            100% { opacity: 0; transform: translate(calc(var(--x-dir) * 2), -200px) scale(0.8); }
         }
 
     </style>
@@ -141,24 +140,11 @@
     <p class="love-text">i love you bou forever,and ever,and ever 💕</p>
     <p class="initials-text">S+S</p> 
 
-    <div class="roses-row" id="rosesContainer"></div>
+    <div class="single-rose-container">
+        <img src="https://img.sanishtech.com/u/a9e0002019be301de363d4a7da5b1b2f.png" alt="Rose" class="single-rose" id="mainRose">
+    </div>
 
     <script>
-        // পেজের নিচে ৭টা গোলাপ অ্যাড করা হচ্ছে (যাতে পুরো স্ক্রিন কভার হয়)
-        const rosesContainer = document.getElementById('rosesContainer');
-        const roseImageUrl = "https://img.sanishtech.com/u/a9e0002019be301de363d4a7da5b1b2f.png";
-        const numberOfRoses = 7; 
-
-        for (let i = 0; i < numberOfRoses; i++) {
-            let img = document.createElement('img');
-            img.src = roseImageUrl;
-            img.className = 'bottom-rose';
-            // এক একটা গোলাপ একটু আলাদা সময়ে দুলবে যাতে ন্যাচারাল লাগে
-            img.style.animationDelay = (Math.random() * 2) + 's';
-            img.style.animationDuration = (Math.random() * 1 + 2.5) + 's'; 
-            rosesContainer.appendChild(img);
-        }
-
         // ১. ফায়ারওয়ার্কস ব্লাস্ট
         function explodeHearts() {
             for (let i = 0; i < 60; i++) {
@@ -204,22 +190,31 @@
             setTimeout(() => heart.remove(), (duration + 2) * 1000);
         }
 
-        // ৩. নিচের গোলাপগুলোর পেছন থেকে "sorry" ভেসে ওঠার ফাংশন
-        function popUpSorryFromBottom() {
+        // ৩. বড় গোলাপের পেছন থেকে "sorry" ভেসে ওঠার ফাংশন
+        function popUpSorryFromRose() {
             let sorryText = document.createElement('div');
             sorryText.innerHTML = 'sorry 🥺'; 
             sorryText.className = 'sorry-comment';
             
-            // র্যান্ডম X পজিশন (যাতে যেকোনো গোলাপের পেছন থেকে উঠতে পারে)
-            let startX = Math.random() * (window.innerWidth - 50); 
-            let startY = window.innerHeight - (Math.random() * 50 + 80); // গোলাপের ঠিক পেছন থেকে
+            const rose = document.getElementById('mainRose');
+            const rect = rose.getBoundingClientRect();
+            
+            // গোলাপের ছবির মাঝখান এবং উপরের দিক (ফুলের অংশ) থেকে বের হবে
+            let startX = rect.left + (rect.width / 2) - 30; // মাঝ বরাবর
+            let startY = rect.top + (rect.height * 0.15); // ছবির উপরের দিকের ফুলের অংশ
             
             sorryText.style.left = startX + 'px';
             sorryText.style.top = startY + 'px';
-            sorryText.style.fontSize = (Math.random() * 0.8 + 1) + 'rem';
+
+            // ডানে বা বাঁয়ে স্মুথলি ভেসে যাওয়ার ডিরেকশন সেট করা
+            sorryText.style.setProperty('--x-dir', `${(Math.random() - 0.5) * 160}px`);
+            
+            let size = Math.random() * 0.8 + 1; // সাইজ একটু ছোট-বড় হবে
+            sorryText.style.fontSize = size + 'rem';
             
             document.body.appendChild(sorryText);
             
+            // অ্যানিমেশন শেষ হলে মুছে ফেলা হবে
             setTimeout(() => sorryText.remove(), 4000);
         }
 
@@ -238,10 +233,10 @@
         setTimeout(explodeHearts, 500);
         setInterval(floatHearts, 400);
 
-        // ৩.৫ সেকেন্ড পর (সব লেখা আসার পর) থেকে sorry বের হওয়া শুরু হবে
+        // ৩ সেকেন্ড পর (সব লেখা আসার পর) থেকে গোলাপের পেছন থেকে sorry বের হওয়া শুরু হবে
         setTimeout(() => {
-            setInterval(popUpSorryFromBottom, 700);
-        }, 3500); 
+            setInterval(popUpSorryFromRose, 700);
+        }, 3000); 
     </script>
 
 </body>
